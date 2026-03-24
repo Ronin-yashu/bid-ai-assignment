@@ -1,15 +1,17 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import api from '../lib/api'
 import { useAuthStore } from '../store/authStore'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true)
   const [loading, setLoading] = useState(false)
+  const [showPass, setShowPass] = useState(false)
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
   const { setAuth } = useAuthStore()
   const navigate = useNavigate()
@@ -17,57 +19,70 @@ export default function LoginPage() {
   const onSubmit = async (data) => {
     setLoading(true)
     try {
-      const endpoint = isLogin ? '/auth/login' : '/auth/register'
-      const res = await api.post(endpoint, data)
+      const res = await api.post(isLogin ? '/auth/login' : '/auth/register', data)
       setAuth(res.data.user, res.data.token)
-      toast.success(isLogin ? 'Welcome back!' : 'Account created!')
+      toast.success(isLogin ? `Welcome back, ${res.data.user.name}! 👋` : `Account created! Welcome to YSP 🎉`)
       reset()
-      setTimeout(() => navigate('/'), 800)
+      setTimeout(() => navigate(res.data.user.role === 'admin' ? '/admin' : '/'), 800)
     } catch (err) {
       toast.error(err.response?.data?.message || 'Something went wrong')
-    } finally {
-      setLoading(false)
-    }
+    } finally { setLoading(false) }
   }
 
   return (
     <div className="min-h-screen font-sans bg-gray-50">
-      <Toaster position="top-right" />
       <Navbar />
       <div className="h-1 bg-[#FF6B2B]"></div>
       <section className="py-20">
         <div className="max-w-md mx-auto px-6">
+          {/* Toggle */}
+          <div className="flex bg-white border border-gray-100 rounded-full p-1 mb-8 shadow-sm">
+            <button onClick={() => { setIsLogin(true); reset() }}
+              className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition ${
+                isLogin ? 'bg-[#FF6B2B] text-white shadow' : 'text-gray-500 hover:text-gray-700'
+              }`}>Sign In</button>
+            <button onClick={() => { setIsLogin(false); reset() }}
+              className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition ${
+                !isLogin ? 'bg-[#FF6B2B] text-white shadow' : 'text-gray-500 hover:text-gray-700'
+              }`}>Sign Up</button>
+          </div>
+
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
             <div className="text-center mb-8">
               <div className="w-14 h-14 bg-[#FF6B2B] rounded-full mx-auto mb-4 flex items-center justify-center">
                 <span className="text-white font-black text-lg">YSP</span>
               </div>
-              <h1 className="text-2xl font-black text-[#1a1a2e]">{ isLogin ? 'Welcome Back' : 'Create Account' }</h1>
-              <p className="text-gray-500 text-sm mt-1">{ isLogin ? 'Sign in to your YSP account' : 'Join Yuva Shakti Party' }</p>
+              <h1 className="text-2xl font-black text-[#1a1a2e]">{isLogin ? 'Welcome Back' : 'Join YSP'}</h1>
+              <p className="text-gray-500 text-sm mt-1">{isLogin ? 'Sign in to your account' : 'Create your account today'}</p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {!isLogin && (
                 <div>
-                  <label className="text-xs font-semibold text-gray-700 block mb-1">Full Name</label>
-                  <input {...register('name', { required: 'Name is required' })}
-                    placeholder="Your name"
-                    className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#FF6B2B]" />
+                  <label className="text-xs font-semibold text-gray-700 block mb-1">Full Name *</label>
+                  <input {...register('name', { required: 'Name is required' })} placeholder="Your full name"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#FF6B2B] transition" />
                   {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
                 </div>
               )}
               <div>
-                <label className="text-xs font-semibold text-gray-700 block mb-1">Email</label>
-                <input {...register('email', { required: 'Email is required', pattern: { value: /^\S+@\S+$/, message: 'Invalid email' } })}
+                <label className="text-xs font-semibold text-gray-700 block mb-1">Email *</label>
+                <input {...register('email', { required: 'Email required', pattern: { value: /^\S+@\S+$/, message: 'Invalid email' } })}
                   type="email" placeholder="your@email.com"
-                  className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#FF6B2B]" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#FF6B2B] transition" />
                 {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-700 block mb-1">Password</label>
-                <input {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Min 6 characters' } })}
-                  type="password" placeholder="••••••••"
-                  className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#FF6B2B]" />
+                <label className="text-xs font-semibold text-gray-700 block mb-1">Password *</label>
+                <div className="relative">
+                  <input {...register('password', { required: 'Password required', minLength: { value: 6, message: 'Min 6 characters' } })}
+                    type={showPass ? 'text' : 'password'} placeholder="••••••••"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#FF6B2B] transition pr-10" />
+                  <button type="button" onClick={() => setShowPass(!showPass)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
                 {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
               </div>
 
@@ -77,12 +92,11 @@ export default function LoginPage() {
               </button>
             </form>
 
-            <p className="text-center text-sm text-gray-500 mt-6">
-              {isLogin ? "Don't have an account? " : 'Already have an account? '}
-              <button onClick={() => { setIsLogin(!isLogin); reset() }} className="text-[#FF6B2B] font-semibold hover:underline">
-                {isLogin ? 'Sign Up' : 'Sign In'}
-              </button>
-            </p>
+            {isLogin && (
+              <p className="text-center text-xs text-gray-400 mt-4">
+                <Link to="#" className="hover:text-[#FF6B2B] transition">Forgot your password?</Link>
+              </p>
+            )}
           </div>
         </div>
       </section>
