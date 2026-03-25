@@ -16,7 +16,7 @@ export default function Footer() {
           <div className="space-y-2 text-xs">
             <div className="flex items-start gap-2">
               <MapPin size={13} className="text-[#FF6B2B] mt-0.5 flex-shrink-0" />
-              <span>Yuva Shakti Party, Complete address, New Delhi, India</span>
+              <span>Yuva Shakti Party, New Delhi, India</span>
             </div>
             <div className="flex items-center gap-2">
               <Phone size={13} className="text-[#FF6B2B] flex-shrink-0" />
@@ -24,7 +24,7 @@ export default function Footer() {
             </div>
             <div className="flex items-center gap-2">
               <Mail size={13} className="text-[#FF6B2B] flex-shrink-0" />
-              <span>contact@ysp.in</span>
+              <a href="mailto:contact@ysp.in" className="hover:text-[#FF6B2B] transition">contact@ysp.in</a>
             </div>
           </div>
         </div>
@@ -33,41 +33,49 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-semibold text-sm mb-4">About</h4>
           <ul className="space-y-2.5 text-xs">
-            {['About Us','Transparency','Careers','State 2026'].map(l => (
-              <li key={l}><Link to="#" className="hover:text-[#FF6B2B] transition">{l}</Link></li>
-            ))}
+            <li><Link to="/about" className="hover:text-[#FF6B2B] transition">About Us</Link></li>
+            <li><Link to="/transparency" className="hover:text-[#FF6B2B] transition">Transparency</Link></li>
+            <li><Link to="/careers" className="hover:text-[#FF6B2B] transition">Careers</Link></li>
+            <li><Link to="/membership" className="hover:text-[#FF6B2B] transition">Membership</Link></li>
           </ul>
         </div>
 
-        {/* Legal */}
+        {/* Explore */}
         <div>
-          <h4 className="text-white font-semibold text-sm mb-4">Legal</h4>
+          <h4 className="text-white font-semibold text-sm mb-4">Explore</h4>
           <ul className="space-y-2.5 text-xs">
-            {['Contact','Terms & Conditions','Privacy Policy'].map(l => (
-              <li key={l}><Link to="#" className="hover:text-[#FF6B2B] transition">{l}</Link></li>
-            ))}
+            <li><Link to="/ysp-tv" className="hover:text-[#FF6B2B] transition">YSP TV</Link></li>
+            <li><Link to="/media" className="hover:text-[#FF6B2B] transition">Media & Press</Link></li>
+            <li><Link to="/login" className="hover:text-[#FF6B2B] transition">Login / Sign Up</Link></li>
+            <li><Link to="/profile" className="hover:text-[#FF6B2B] transition">My Profile</Link></li>
           </ul>
         </div>
 
         {/* Social */}
         <div>
-          <h4 className="text-white font-semibold text-sm mb-4">Social Links</h4>
-          <div className="flex gap-3">
+          <h4 className="text-white font-semibold text-sm mb-4">Follow Us</h4>
+          <div className="flex gap-3 mb-5">
             {[
-              { icon: <Facebook size={15} />, href: '#' },
-              { icon: <Linkedin size={15} />, href: '#' },
-              { icon: <Youtube size={15} />, href: '#' },
-              { icon: <Twitter size={15} />, href: '#' },
+              { icon: <Facebook size={15} />, href: 'https://facebook.com' },
+              { icon: <Linkedin size={15} />, href: 'https://linkedin.com' },
+              { icon: <Youtube size={15} />, href: 'https://youtube.com' },
+              { icon: <Twitter size={15} />, href: 'https://twitter.com' },
             ].map((s, i) => (
-              <a key={i} href={s.href} className="w-9 h-9 bg-gray-700 rounded-full flex items-center justify-center hover:bg-[#FF6B2B] transition text-white">
+              <a key={i} href={s.href} target="_blank" rel="noreferrer"
+                className="w-9 h-9 bg-gray-700 rounded-full flex items-center justify-center hover:bg-[#FF6B2B] transition text-white">
                 {s.icon}
               </a>
             ))}
           </div>
+          <div className="space-y-2 text-xs">
+            <p className="text-gray-500">Legal</p>
+            <a href="#" className="block hover:text-[#FF6B2B] transition">Terms & Conditions</a>
+            <a href="#" className="block hover:text-[#FF6B2B] transition">Privacy Policy</a>
+          </div>
         </div>
       </div>
       <div className="border-t border-gray-800 py-5 text-center text-xs">
-        Copyright &copy; 2025 Yuva Shakti Party. All Rights Reserved.
+        Copyright &copy; 2026 Yuva Shakti Party. All Rights Reserved.
       </div>
     </footer>
   )

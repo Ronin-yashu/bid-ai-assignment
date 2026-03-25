@@ -1,6 +1,7 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { Link } from 'react-router-dom'
+import { ChevronRight } from 'lucide-react'
 
 export default function HomePage() {
   return (
@@ -19,21 +20,29 @@ export default function HomePage() {
             <p className="text-gray-600 text-sm leading-relaxed mb-8">
               Yuva Shakti Party is India's first structured leadership development political platform — designed to train, certify, and empower the next generation of ethical leaders.
             </p>
-            <div className="flex flex-col items-start gap-3">
-              <button className="bg-[#FF6B2B] text-white px-8 py-3 rounded-full font-semibold text-sm hover:bg-orange-600 transition">Join the Movement</button>
-              <a href="#about" className="text-gray-500 text-sm flex items-center gap-1 hover:text-[#FF6B2B] transition">
-                <span className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-xs">↓</span>
-              </a>
+            <div className="flex flex-wrap items-center gap-4">
+              <Link to="/membership" className="bg-[#FF6B2B] text-white px-8 py-3 rounded-full font-semibold text-sm hover:bg-orange-600 transition flex items-center gap-2">
+                Join the Movement <ChevronRight size={15} />
+              </Link>
+              <Link to="/about" className="text-gray-500 text-sm border border-gray-200 px-6 py-3 rounded-full hover:border-[#FF6B2B] hover:text-[#FF6B2B] transition">
+                Learn More
+              </Link>
             </div>
           </div>
-          <div className="bg-gray-100 rounded-2xl h-80 flex items-center justify-center">
-            <span className="text-gray-400 text-sm">Hero Image</span>
+          <div className="bg-gradient-to-br from-[#1a1a2e] to-[#2a2a4e] rounded-2xl h-80 flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-20 h-20 bg-[#FF6B2B] rounded-full mx-auto mb-4 flex items-center justify-center">
+                <span className="text-white font-black text-2xl">YSP</span>
+              </div>
+              <p className="text-white font-bold">Yuva Shakti Party</p>
+              <p className="text-gray-400 text-xs mt-1">India's Leadership Platform</p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Why YSP Exists */}
-      <section className="bg-white py-16" id="about">
+      <section className="bg-white py-16">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-[#FF6B2B] mb-6">Why YSP Exists</h2>
           <p className="text-gray-900 text-lg font-bold">India does not lack youth.</p>
@@ -44,7 +53,7 @@ export default function HomePage() {
           <div className="mt-6">
             <p className="font-bold text-gray-900 mb-2">Our goal.</p>
             <p className="text-gray-600 text-sm leading-relaxed">
-              Our goal is simple. Transform politics from a system of visibility into a system of preparation — where leadership is trained, evaluated, and earned.
+              Transform politics from a system of visibility into a system of preparation — where leadership is trained, evaluated, and earned.
             </p>
           </div>
           <div className="flex justify-center mt-8">
@@ -58,15 +67,15 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div className="bg-[#1a1a2e] rounded-2xl h-96 flex flex-col items-center justify-end p-6 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a2e] via-transparent to-transparent z-10"></div>
-            <div className="w-32 h-32 bg-gray-600 rounded-full mb-3 z-20"></div>
+            <div className="w-32 h-32 bg-gray-600 rounded-full mb-3 z-20 border-4 border-[#FF6B2B]/30"></div>
             <p className="text-white font-bold text-base z-20">Dr. Deepak Chaurasiya</p>
             <p className="text-gray-400 text-xs z-20">Founder, Yuva Shakti Party</p>
           </div>
           <div>
-            <span className="bg-orange-100 text-[#FF6B2B] text-xs font-semibold px-3 py-1 rounded-full">Bundelkhand</span>
-            <h2 className="text-3xl font-black text-gray-900 mt-4 mb-5">"From Barigarh to Bharat "</h2>
+            <span className="bg-orange-100 text-[#FF6B2B] text-xs font-semibold px-3 py-1 rounded-full">Founder's Story</span>
+            <h2 className="text-3xl font-black text-gray-900 mt-4 mb-5">"From Barigarh to Bharat"</h2>
             <p className="text-gray-600 text-sm leading-relaxed mb-3">
-              Born in the Bundelkhand region of India, <span className="text-[#FF6B2B] font-semibold">Dr. Deepak Chaurasiya's</span> early life was shaped by economic uncertainty and social constraints. His family's migration during childhood exposed him to the realities faced by millions of young Indians navigating survival before opportunity.
+              Born in the Bundelkhand region of India, <span className="text-[#FF6B2B] font-semibold">Dr. Deepak Chaurasiya's</span> early life was shaped by economic uncertainty. His family's migration during childhood exposed him to the realities faced by millions of young Indians navigating survival before opportunity.
             </p>
             <p className="text-gray-600 text-sm leading-relaxed mb-3">
               Instead of entering the workforce early, he chose the path of education — pursuing engineering, <span className="text-[#FF6B2B] font-semibold">advanced research, and legal studies</span> to understand how institutions function.
@@ -74,9 +83,12 @@ export default function HomePage() {
             <p className="text-gray-600 text-sm leading-relaxed mb-4">
               Today his work <span className="text-[#FF6B2B] font-semibold">spans entrepreneurship, technology, rural development, and policy research.</span>
             </p>
-            <blockquote className="border-l-4 border-[#FF6B2B] pl-4 italic text-gray-600 text-sm">
+            <blockquote className="border-l-4 border-[#FF6B2B] pl-4 italic text-gray-600 text-sm mb-6">
               "Governance should not be accidental. It must be prepared for."
             </blockquote>
+            <Link to="/about" className="text-[#FF6B2B] text-sm font-semibold hover:underline flex items-center gap-1">
+              Read Full Story <ChevronRight size={14} />
+            </Link>
           </div>
         </div>
       </section>
@@ -100,35 +112,35 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <button className="mt-10 border border-[#FF6B2B] text-[#FF6B2B] px-8 py-3 rounded-full font-semibold text-sm hover:bg-orange-50 transition">View Complete Vision Document</button>
+          <Link to="/about" className="mt-10 border border-[#FF6B2B] text-[#FF6B2B] px-8 py-3 rounded-full font-semibold text-sm hover:bg-orange-50 transition inline-block">
+            View Complete Vision →
+          </Link>
         </div>
       </section>
 
       {/* Transparency */}
-      <section className="bg-[#FF6B2B] py-16" id="transparency">
+      <section className="bg-[#FF6B2B] py-16">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Transparency is <span className="underline">Non-Negotiable</span></h2>
-          <p className="text-orange-100 max-w-2xl mx-auto text-sm leading-relaxed mb-3">
-            Trust in institutions is built through accountability.
-          </p>
+          <p className="text-orange-100 max-w-2xl mx-auto text-sm leading-relaxed mb-3">Trust in institutions is built through accountability.</p>
           <p className="text-orange-100 max-w-2xl mx-auto text-sm leading-relaxed mb-10">
             <span className="font-bold text-white">Yuva Shakti Party</span> is committed to maintaining full transparency in its <span className="font-bold text-white underline">organizational processes, financial disclosures, and governance decisions.</span>
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
             {[
-              { icon: '💰', label: 'Financial disclosure' },
-              { icon: '🔍', label: 'Governance oversight' },
-              { icon: '👁', label: 'Public accountability' },
+              { icon: '💰', label: 'Financial Disclosure', path: '/transparency' },
+              { icon: '🔍', label: 'Governance Oversight', path: '/transparency' },
+              { icon: '👁', label: 'Public Accountability', path: '/transparency' },
             ].map(item => (
-              <div key={item.label} className="bg-orange-400/50 rounded-2xl p-8">
+              <Link to={item.path} key={item.label} className="bg-orange-400/50 rounded-2xl p-8 hover:bg-orange-400/70 transition cursor-pointer block">
                 <div className="w-14 h-14 bg-orange-300/50 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl">{item.icon}</div>
                 <p className="text-white font-bold text-sm">{item.label}</p>
-              </div>
+              </Link>
             ))}
           </div>
-          <p className="text-white italic text-sm max-w-xl mx-auto">
-            Our structure includes internal audits, public reporting, and ethical oversight mechanisms to ensure leadership remains accountable to the citizens it serves.
-          </p>
+          <Link to="/transparency" className="bg-white text-[#FF6B2B] px-8 py-3 rounded-full font-bold text-sm hover:bg-orange-50 transition inline-block">
+            View All Reports →
+          </Link>
         </div>
       </section>
 
@@ -140,9 +152,13 @@ export default function HomePage() {
             India's next generation of leadership must be prepared, ethical, and capable.<br />
             If you believe politics should reward competence rather than inheritance, <span className="text-white font-bold">YSP welcomes you.</span>
           </p>
-          <div className="flex gap-4 justify-center">
-            <button className="bg-[#FF6B2B] text-white px-8 py-3 rounded-full font-semibold hover:bg-orange-600 transition">Become a Member</button>
-            <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition">Volunteer</button>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Link to="/membership" className="bg-[#FF6B2B] text-white px-8 py-3 rounded-full font-semibold hover:bg-orange-600 transition">
+              Become a Member
+            </Link>
+            <Link to="/careers" className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition">
+              View Careers
+            </Link>
           </div>
         </div>
       </section>
