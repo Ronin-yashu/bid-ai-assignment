@@ -1,16 +1,12 @@
 import { Router } from 'express'
-import { body, param } from 'express-validator'
-import { getJobs, getJobById, createJob, deleteJob } from '../controllers/jobsController.js'
-import { verifyToken, requireAdmin } from '../middleware/auth.js'
+import { body } from 'express-validator'
+import { getJobs, createJob, deleteJob } from '../controllers/jobsController.js'
+import { verifyToken } from '../middleware/auth.js'
 import { validate } from '../middleware/validate.js'
 
 const router = Router()
 
 router.get('/', getJobs)
-router.get('/:id',
-  [param('id').isUUID().withMessage('Invalid job ID'), validate],
-  getJobById
-)
 
 router.post('/',
   [
@@ -23,14 +19,6 @@ router.post('/',
   createJob
 )
 
-router.delete('/:id',
-  [
-    verifyToken,
-    requireAdmin,
-    param('id').isUUID().withMessage('Invalid job ID'),
-    validate
-  ],
-  deleteJob
-)
+router.delete('/:id', verifyToken, deleteJob)
 
 export default router

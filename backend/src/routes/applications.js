@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { body, param, query } from 'express-validator'
+import { body, param } from 'express-validator'
 import { submitApplication, getApplications, updateApplicationStatus, getApplicationStats } from '../controllers/applicationsController.js'
 import { verifyToken, requireAdmin } from '../middleware/auth.js'
 import { validate } from '../middleware/validate.js'
@@ -10,7 +10,6 @@ router.post('/submit',
   [
     body('full_name').trim().notEmpty().withMessage('Full name is required'),
     body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
-    body('phone').optional().isMobilePhone('any').withMessage('Invalid phone number'),
     validate
   ],
   submitApplication
@@ -23,7 +22,7 @@ router.patch('/:id/status',
   [
     verifyToken,
     requireAdmin,
-    param('id').isUUID().withMessage('Invalid application ID'),
+    param('id').isUUID().withMessage('Invalid ID'),
     body('status').isIn(['pending', 'reviewed', 'shortlisted', 'rejected']).withMessage('Invalid status'),
     validate
   ],
