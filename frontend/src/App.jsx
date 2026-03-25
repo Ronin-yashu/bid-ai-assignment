@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom'
 import NotificationToast from './components/NotificationToast'
 import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute'
 import HomePage from './pages/HomePage'
@@ -36,7 +36,7 @@ export default function App() {
             </div>
             <h1 className="text-6xl font-black text-[#FF6B2B]">404</h1>
             <p className="text-gray-500 text-lg">Page not found</p>
-            <a href="/" className="bg-[#FF6B2B] text-white px-8 py-3 rounded-full text-sm font-semibold hover:bg-orange-600 transition mt-2">Go Home</a>
+            <Link to="/" className="bg-[#FF6B2B] text-white px-8 py-3 rounded-full text-sm font-semibold hover:bg-orange-600 transition mt-2">Go Home</Link>
           </div>
         } />
       </Routes>

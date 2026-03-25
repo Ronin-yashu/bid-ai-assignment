@@ -1,12 +1,13 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { Newspaper, Radio, ExternalLink, Calendar } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { Newspaper, ExternalLink, Calendar } from 'lucide-react'
 
 const pressItems = [
   { outlet: 'The Hindu', title: 'YSP launches structured leadership training for youth in MP', date: 'Jan 12, 2026', category: 'Print Media' },
   { outlet: 'NDTV', title: 'Yuva Shakti Party — the new face of youth politics in India', date: 'Dec 5, 2025', category: 'TV' },
   { outlet: 'Indian Express', title: 'How YSP is changing how young Indians think about governance', date: 'Nov 20, 2025', category: 'Print Media' },
-  { outlet: 'Scroll.in', title: 'YSP\'s policy research wing releases report on rural education', date: 'Oct 15, 2025', category: 'Digital' },
+  { outlet: 'Scroll.in', title: "YSP's policy research wing releases report on rural education", date: 'Oct 15, 2025', category: 'Digital' },
   { outlet: 'Republic World', title: 'Dr. Deepak Chaurasiya on the future of political leadership in India', date: 'Sep 8, 2025', category: 'TV' },
   { outlet: 'The Wire', title: 'YSP and the promise of evidence-based governance', date: 'Aug 22, 2025', category: 'Digital' },
 ]
@@ -37,8 +38,11 @@ export default function MediaPage() {
           <h1 className="text-5xl font-black text-white mt-5 mb-5">YSP in the <span className="text-[#FF6B2B]">News</span></h1>
           <p className="text-gray-400 text-sm leading-relaxed">Press coverage, official statements, media resources and everything journalists need to cover Yuva Shakti Party.</p>
           <div className="flex gap-4 justify-center mt-8">
-            <button className="bg-[#FF6B2B] text-white px-8 py-3 rounded-full font-semibold text-sm hover:bg-orange-600 transition">Press Enquiry</button>
-            <button className="border border-gray-600 text-gray-300 px-8 py-3 rounded-full font-semibold text-sm hover:border-[#FF6B2B] hover:text-[#FF6B2B] transition">Download Media Kit</button>
+            <a href="mailto:media@ysp.in"
+              className="bg-[#FF6B2B] text-white px-8 py-3 rounded-full font-semibold text-sm hover:bg-orange-600 transition">Press Enquiry</a>
+            <button
+              onClick={() => toast.success('Media kit download coming soon!')}
+              className="border border-gray-600 text-gray-300 px-8 py-3 rounded-full font-semibold text-sm hover:border-[#FF6B2B] hover:text-[#FF6B2B] transition">Download Media Kit</button>
           </div>
         </div>
       </section>
@@ -75,7 +79,9 @@ export default function MediaPage() {
           <p className="text-gray-500 text-sm mb-10">Download official YSP materials for press and publication</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {mediaKitItems.map(item => (
-              <div key={item.title} className="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition cursor-pointer group">
+              <div key={item.title}
+                onClick={() => toast.success(`${item.title} download coming soon!`)}
+                className="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition cursor-pointer group">
                 <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center mb-4">
                   <Newspaper size={18} className="text-[#FF6B2B]" />
                 </div>
@@ -94,7 +100,8 @@ export default function MediaPage() {
           <h2 className="text-3xl font-black text-white mb-4">Media Enquiries</h2>
           <p className="text-gray-400 text-sm mb-2">For press and media enquiries, please contact our communications team.</p>
           <p className="text-[#FF6B2B] font-semibold mb-8">media@ysp.in</p>
-          <button className="bg-[#FF6B2B] text-white px-10 py-3 rounded-full font-bold text-sm hover:bg-orange-600 transition">Send Press Enquiry</button>
+          <a href="mailto:media@ysp.in"
+            className="bg-[#FF6B2B] text-white px-10 py-3 rounded-full font-bold text-sm hover:bg-orange-600 transition inline-block">Send Press Enquiry</a>
         </div>
       </section>
 

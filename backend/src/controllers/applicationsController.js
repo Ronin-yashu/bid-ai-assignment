@@ -3,6 +3,7 @@ import pool from '../db/pool.js'
 export const submitApplication = async (req, res, next) => {
   try {
     const { job_id, full_name, email, phone, city_state, education, area_of_interest, why_join } = req.body
+    if (!full_name || !email) return res.status(400).json({ success: false, message: 'Full name and email are required' })
     const duplicate = await pool.query(
       'SELECT id FROM applications WHERE email=$1 AND (job_id=$2 OR (job_id IS NULL AND $2::uuid IS NULL))',
       [email, job_id || null]
@@ -23,7 +24,7 @@ export const getApplications = async (req, res, next) => {
   try {
     const { status, page = 1, limit = 20, search } = req.query
     const offset = (parseInt(page) - 1) * parseInt(limit)
-    let conditions = []
+    const conditions = []
     const params = []
     if (status) { params.push(status); conditions.push(`a.status=$${params.length}`) }
     if (search) { params.push(`%${search}%`); conditions.push(`(a.full_name ILIKE $${params.length} OR a.email ILIKE $${params.length})`) }
@@ -55,9 +56,13 @@ export const getApplicationStats = async (req, res, next) => {
 
 export const updateApplicationStatus = async (req, res, next) => {
   try {
+    const { status } = req.body
+    const validStatuses = ['pending', 'reviewed', 'shortlisted', 'rejected']
+    if (!validStatuses.includes(status))
+      return res.status(400).json({ success: false, message: 'Invalid status value' })
     const result = await pool.query(
       'UPDATE applications SET status=$1 WHERE id=$2 RETURNING *',
-      [req.body.status, req.params.id]
+      [status, req.params.id]
     )
     if (!result.rows[0]) return res.status(404).json({ success: false, message: 'Application not found' })
     res.json({ success: true, message: 'Status updated', application: result.rows[0] })

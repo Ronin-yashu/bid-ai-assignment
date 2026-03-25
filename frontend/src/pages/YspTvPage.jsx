@@ -1,5 +1,6 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import toast from 'react-hot-toast'
 import { Play, Users, Tv, Mic } from 'lucide-react'
 
 const episodes = [
@@ -27,6 +28,13 @@ const categoryColors = {
 }
 
 export default function YspTvPage() {
+  const handleWatch = (title) => {
+    toast('🎬 Launching player...', {
+      icon: '▶️',
+      duration: 2500,
+    })
+  }
+
   return (
     <div className="min-h-screen font-sans">
       <Navbar />
@@ -47,10 +55,16 @@ export default function YspTvPage() {
               ))}
             </ul>
             <div className="flex gap-3">
-              <button className="bg-[#FF6B2B] text-white px-6 py-3 rounded-full font-semibold text-sm flex items-center gap-2 hover:bg-orange-600 transition">
+              <button
+                onClick={() => handleWatch('Featured Episode')}
+                className="bg-[#FF6B2B] text-white px-6 py-3 rounded-full font-semibold text-sm flex items-center gap-2 hover:bg-orange-600 transition">
                 <Play size={16} fill="white" /> Watch Now
               </button>
-              <button className="border border-gray-600 text-gray-300 px-6 py-3 rounded-full font-semibold text-sm hover:border-[#FF6B2B] hover:text-[#FF6B2B] transition">Visit YSP TV Channel</button>
+              <a
+                href="https://www.youtube.com/@yuvashaktiparty"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-gray-600 text-gray-300 px-6 py-3 rounded-full font-semibold text-sm hover:border-[#FF6B2B] hover:text-[#FF6B2B] transition">Visit YSP TV Channel</a>
             </div>
           </div>
           <div className="bg-gray-800 rounded-2xl p-8">
@@ -78,7 +92,10 @@ export default function YspTvPage() {
           <p className="text-gray-500 text-sm mb-10">Watch, learn, and engage with India's most important conversations.</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {episodes.map(ep => (
-              <div key={ep.title} className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg transition group cursor-pointer">
+              <div
+                key={ep.title}
+                onClick={() => handleWatch(ep.title)}
+                className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg transition group cursor-pointer">
                 <div className="bg-[#1a1a2e] h-44 flex items-center justify-center relative">
                   {ep.featured && <span className="absolute top-3 left-3 bg-[#FF6B2B] text-white text-xs font-bold px-2.5 py-1 rounded-full">Featured</span>}
                   <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-[#FF6B2B] transition">

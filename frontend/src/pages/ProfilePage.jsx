@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '../store/authStore'
 import api from '../lib/api'
@@ -96,8 +96,8 @@ export default function ProfilePage() {
                 ...(profile?.role === 'admin' ? [{ label: 'Admin Dashboard', path: '/admin', color: 'bg-[#1a1a2e] text-white hover:bg-[#2a2a3e]' }] : []),
                 { label: 'Transparency', path: '/transparency', color: 'bg-green-50 text-green-600 hover:bg-green-100' },
               ].map(item => (
-                <a key={item.label} href={item.path}
-                  className={`${item.color} rounded-xl p-4 text-sm font-semibold text-center transition`}>{item.label}</a>
+                <Link key={item.label} to={item.path}
+                  className={`${item.color} rounded-xl p-4 text-sm font-semibold text-center transition`}>{item.label}</Link>
               ))}
             </div>
           </div>

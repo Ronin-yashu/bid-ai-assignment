@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import api from '../lib/api'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { Users, Briefcase, FileText, CheckCircle, XCircle, Clock, Eye, Trash2, Plus } from 'lucide-react'
+import { Briefcase, FileText, CheckCircle, Clock, Trash2, Plus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 const statusColors = {
@@ -24,6 +24,11 @@ export default function AdminPage() {
     queryFn: () => api.get(`/application/?status=${statusFilter}`).then(r => r.data),
   })
 
+  const { data: statsData } = useQuery({
+    queryKey: ['admin-stats'],
+    queryFn: () => api.get('/application/stats').then(r => r.data),
+  })
+
   const { data: jobsData, isLoading: jobsLoading } = useQuery({
     queryKey: ['admin-jobs'],
     queryFn: () => api.get('/get/jobs').then(r => r.data),
@@ -31,7 +36,7 @@ export default function AdminPage() {
 
   const updateStatus = useMutation({
     mutationFn: ({ id, status }) => api.patch(`/application/${id}/status`, { status }),
-    onSuccess: () => { toast.success('Status updated!'); qc.invalidateQueries(['admin-applications']) },
+    onSuccess: () => { toast.success('Status updated!'); qc.invalidateQueries(['admin-applications']); qc.invalidateQueries(['admin-stats']) },
     onError: () => toast.error('Failed to update status'),
   })
 
@@ -41,14 +46,39 @@ export default function AdminPage() {
     onError: () => toast.error('Failed to delete job'),
   })
 
+  const handleDeleteJob = (id, title) => {
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-semibold">Remove "{title}"?</p>
+          <p className="text-xs text-gray-400">This action cannot be undone.</p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => { toast.dismiss(t.id); deleteJob.mutate(id) }}
+              className="bg-red-500 text-white text-xs px-3 py-1.5 rounded-lg font-semibold hover:bg-red-600 transition">
+              Yes, Remove
+            </button>
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-lg font-semibold hover:bg-gray-200 transition">
+              Cancel
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: 8000 }
+    )
+  }
+
   const apps = appsData?.applications || []
   const jobs = jobsData?.jobs || []
+  const s = statsData?.stats || {}
 
   const stats = [
-    { label: 'Total Applications', value: appsData?.pagination?.total || 0, icon: <FileText size={20} />, color: 'bg-blue-50 text-blue-600' },
+    { label: 'Total Applications', value: s.total || 0, icon: <FileText size={20} />, color: 'bg-blue-50 text-blue-600' },
     { label: 'Active Jobs', value: jobsData?.pagination?.total || 0, icon: <Briefcase size={20} />, color: 'bg-orange-50 text-[#FF6B2B]' },
-    { label: 'Shortlisted', value: apps.filter(a => a.status === 'shortlisted').length, icon: <CheckCircle size={20} />, color: 'bg-green-50 text-green-600' },
-    { label: 'Pending Review', value: apps.filter(a => a.status === 'pending').length, icon: <Clock size={20} />, color: 'bg-yellow-50 text-yellow-600' },
+    { label: 'Shortlisted', value: s.shortlisted || 0, icon: <CheckCircle size={20} />, color: 'bg-green-50 text-green-600' },
+    { label: 'Pending Review', value: s.pending || 0, icon: <Clock size={20} />, color: 'bg-yellow-50 text-yellow-600' },
   ]
 
   return (
@@ -180,9 +210,9 @@ export default function AdminPage() {
                         <td className="px-5 py-4 text-gray-500">{job.type}</td>
                         <td className="px-5 py-4 text-gray-400 text-xs">{new Date(job.created_at).toLocaleDateString()}</td>
                         <td className="px-5 py-4">
-                          <button onClick={() => {
-                            if (confirm('Remove this job?')) deleteJob.mutate(job.id)
-                          }} className="text-red-400 hover:text-red-600 transition">
+                          <button
+                            onClick={() => handleDeleteJob(job.id, job.title)}
+                            className="text-red-400 hover:text-red-600 transition">
                             <Trash2 size={16} />
                           </button>
                         </td>

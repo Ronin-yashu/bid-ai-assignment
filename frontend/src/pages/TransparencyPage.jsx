@@ -1,5 +1,6 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import toast from 'react-hot-toast'
 import { Eye, FileText, DollarSign, Users, Download, CheckCircle } from 'lucide-react'
 
 const reports = [
@@ -63,7 +64,9 @@ export default function TransparencyPage() {
           <p className="text-gray-500 text-sm mb-10">All reports are publicly available. No login required.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {reports.map(r => (
-              <div key={r.title} className="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition flex items-start gap-4 group cursor-pointer">
+              <div key={r.title}
+                onClick={() => toast.success(`${r.title} — download coming soon!`)}
+                className="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition flex items-start gap-4 group cursor-pointer">
                 <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#FF6B2B] transition">
                   <FileText size={18} className="text-[#FF6B2B] group-hover:text-white transition" />
                 </div>

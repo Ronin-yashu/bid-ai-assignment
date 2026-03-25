@@ -1,32 +1,12 @@
 import { Router } from 'express'
-import { body, param } from 'express-validator'
-import { submitApplication, getApplications, updateApplicationStatus, getApplicationStats } from '../controllers/applicationsController.js'
-import { verifyToken, requireAdmin } from '../middleware/auth.js'
-import { validate } from '../middleware/validate.js'
+import { submitApplication, getApplications, getApplicationStats, updateApplicationStatus } from '../controllers/applicationsController.js'
+import { protect, adminOnly } from '../middleware/auth.js'
 
 const router = Router()
 
-router.post('/submit',
-  [
-    body('full_name').trim().notEmpty().withMessage('Full name is required'),
-    body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
-    validate
-  ],
-  submitApplication
-)
-
-router.get('/', verifyToken, requireAdmin, getApplications)
-router.get('/stats', verifyToken, requireAdmin, getApplicationStats)
-
-router.patch('/:id/status',
-  [
-    verifyToken,
-    requireAdmin,
-    param('id').isUUID().withMessage('Invalid ID'),
-    body('status').isIn(['pending', 'reviewed', 'shortlisted', 'rejected']).withMessage('Invalid status'),
-    validate
-  ],
-  updateApplicationStatus
-)
+router.post('/submit', submitApplication)
+router.get('/stats', protect, adminOnly, getApplicationStats)
+router.get('/', protect, adminOnly, getApplications)
+router.patch('/:id/status', protect, adminOnly, updateApplicationStatus)
 
 export default router
