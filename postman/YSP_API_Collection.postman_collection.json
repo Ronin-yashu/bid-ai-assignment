@@ -1,8 +1,8 @@
 {
   "info": {
-    "name": "YSP - Yuva Shakti Party API",
-    "description": "Complete API collection for YSP platform - Jobs & Applications management",
-    "_postman_id": "ysp-api-v1",
+    "name": "YSP - Bid.ai Assignment API",
+    "description": "Complete API collection for Bid.ai Web Developer Internship Assignment. Covers all 5 required endpoints: POST /job/create, GET /get/jobs, POST /application/submit, GET /get/applications, GET /applications/:id",
+    "_postman_id": "ysp-api-v2",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -47,10 +47,23 @@
       ]
     },
     {
-      "name": "💼 Jobs",
+      "name": "💼 Jobs — Assignment Required",
       "item": [
         {
-          "name": "GET /get/jobs — Fetch All Jobs",
+          "name": "✅ POST /job/create — Create Job [ASSIGNMENT SPEC]",
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) {", "  const res = pm.response.json();", "  pm.collectionVariables.set('job_id', res.job.id);", "  pm.test('Job created successfully', () => pm.expect(res.success).to.be.true);", "}" ] } }],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/job/create",
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Policy Research Associate\",\n  \"department\": \"Research\",\n  \"location\": \"Delhi / Remote\",\n  \"type\": \"Full-time\",\n  \"description\": \"Conduct policy research and contribute to YSP publications.\",\n  \"requirements\": \"Graduate in Political Science or related field.\"\n}" }
+          }
+        },
+        {
+          "name": "✅ GET /get/jobs — Fetch All Jobs [ASSIGNMENT SPEC]",
           "request": {
             "method": "GET",
             "header": [],
@@ -67,19 +80,6 @@
           }
         },
         {
-          "name": "POST /get/jobs — Create Job",
-          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) {", "  const res = pm.response.json();", "  pm.collectionVariables.set('job_id', res.job.id);", "  pm.test('Job created', () => pm.expect(res.success).to.be.true);", "}" ] } }],
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "url": "{{base_url}}/get/jobs",
-            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Policy Research Associate\",\n  \"department\": \"Research\",\n  \"location\": \"Delhi / Remote\",\n  \"type\": \"Full-time\",\n  \"description\": \"Conduct policy research and contribute to YSP publications.\",\n  \"requirements\": \"Graduate in Political Science or related field.\"\n}" }
-          }
-        },
-        {
           "name": "DELETE /get/jobs/:id — Remove Job",
           "request": {
             "method": "DELETE",
@@ -90,10 +90,10 @@
       ]
     },
     {
-      "name": "📋 Applications",
+      "name": "📋 Applications — Assignment Required",
       "item": [
         {
-          "name": "POST /application/submit — Submit Application",
+          "name": "✅ POST /application/submit — Submit Application [ASSIGNMENT SPEC]",
           "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) {", "  const res = pm.response.json();", "  pm.collectionVariables.set('application_id', res.application.id);", "  pm.test('Application submitted', () => pm.expect(res.success).to.be.true);", "}" ] } }],
           "request": {
             "method": "POST",
@@ -103,14 +103,14 @@
           }
         },
         {
-          "name": "GET /application/ — All Applications (Admin)",
+          "name": "✅ GET /get/applications — Fetch All Applications [ASSIGNMENT SPEC]",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "header": [],
             "url": {
-              "raw": "{{base_url}}/application/?page=1&limit=20",
+              "raw": "{{base_url}}/get/applications?page=1&limit=20",
               "host": ["{{base_url}}"],
-              "path": ["application", ""],
+              "path": ["get", "applications"],
               "query": [
                 { "key": "page", "value": "1" },
                 { "key": "limit", "value": "20" },
@@ -121,15 +121,15 @@
           }
         },
         {
-          "name": "GET /application/:id — Single Application (Admin)",
+          "name": "✅ GET /applications/:id — Single Application [ASSIGNMENT SPEC]",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "header": [],
             "url": "{{base_url}}/application/{{application_id}}"
           }
         },
         {
-          "name": "PATCH /application/:id/status — Update Status (Admin)",
+          "name": "PATCH /application/:id/status — Update Status",
           "request": {
             "method": "PATCH",
             "header": [

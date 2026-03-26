@@ -50,8 +50,8 @@ bid-ai-assignment/
 │   └── src/
 │       ├── controllers/       # authController, jobsController, applicationsController
 │       ├── routes/            # auth.js, jobs.js, applications.js
-│       ├── middleware/        # auth.js (verifyToken, requireAdmin), errorHandler.js
-│       ├── db/                # pool.js, schema.sql
+│       ├── middleware/        # auth.js (verifyToken, requireAdmin), errorHandler.js, validate.js
+│       ├── db/                # pool.js, schema.sql, init.js
 │       └── index.js           # Express entry point
 ├── docs/
 │   ├── er_diagram.html
@@ -71,23 +71,25 @@ bid-ai-assignment/
 |--------|----------|------|-------------|
 | `POST` | `/api/auth/register` | None | Register new user |
 | `POST` | `/api/auth/login` | None | Login, returns JWT |
-| `GET` | `/api/auth/profile` | Bearer JWT | Get current user |
+| `GET` | `/api/auth/profile` | Bearer JWT | Get current user profile |
 
 ### Jobs
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `GET` | `/api/get/jobs` | None | List all active jobs (paginated) |
-| `POST` | `/api/get/jobs` | Bearer JWT | Create new job listing |
+| `POST` | `/api/job/create` | Bearer JWT | **Create new job listing** (assignment spec) |
+| `GET` | `/api/get/jobs` | None | **Fetch all active jobs** for Careers page |
 | `DELETE` | `/api/get/jobs/:id` | Bearer JWT | Soft-delete a job |
 
 ### Applications
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `POST` | `/api/application/submit` | None | Submit a job application |
-| `GET` | `/api/application/` | Admin JWT | List all applications |
-| `GET` | `/api/application/:id` | Admin JWT | Get single application |
+| `POST` | `/api/application/submit` | None | **Submit a job application** |
+| `GET` | `/api/get/applications` | None | **Fetch all applications** (assignment spec) |
+| `GET` | `/api/application/:id` | None | **Fetch specific application by ID** |
 | `PATCH` | `/api/application/:id/status` | Admin JWT | Update application status |
 | `GET` | `/api/application/stats` | Admin JWT | Get counts by status |
+
+> **Note:** All 5 assignment-required endpoints are implemented and publicly accessible for Postman testing.
 
 ---
 
@@ -146,7 +148,7 @@ CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
 
 ## 🔐 Authentication Flow
 
-1. User submits credentials via `/api/auth/login`
+1. User submits credentials via `POST /api/auth/login`
 2. Backend queries DB for user by email
 3. `bcryptjs.compare()` verifies password against hash
 4. On success, JWT signed with `JWT_SECRET` (expires 7 days)
@@ -154,6 +156,18 @@ CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
 6. Every protected request sends `Authorization: Bearer <token>`
 7. `verifyToken` middleware decodes + validates JWT
 8. `requireAdmin` middleware checks `user.role === 'admin'`
+
+---
+
+## 📋 Assignment API Checklist
+
+| # | Assignment Requirement | Endpoint | Status |
+|---|----------------------|----------|--------|
+| 1 | POST /job/create | `POST /api/job/create` | ✅ |
+| 2 | GET /get/jobs | `GET /api/get/jobs` | ✅ |
+| 3 | POST /application/submit | `POST /api/application/submit` | ✅ |
+| 4 | GET /get/applications | `GET /api/get/applications` | ✅ |
+| 5 | GET /applications/:id | `GET /api/application/:id` | ✅ |
 
 ---
 
@@ -177,6 +191,7 @@ CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
 - **Client State:** Zustand with persist middleware (auth token + user)
 - **API Integration:** Axios instance — request interceptor attaches JWT, response interceptor auto-logout on 401
 - **Routing:** Public / Protected (JWT) / Admin (role=admin) routes
+- **Pages:** HomePage, CareersPage, PostJobPage, AdminPage, LoginPage, ProfilePage, AboutPage, MembershipPage, YspTvPage, MediaPage, TransparencyPage
 
 ---
 
@@ -188,6 +203,7 @@ CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
 4. **UUID PKs** — `gen_random_uuid()` on all tables (non-enumerable, secure)
 5. **Connection Pooling** — `pg.Pool` with max 20 connections
 6. **React Query Caching** — 5-min stale time, minimizes redundant API calls
+7. **Dual Route Mounting** — Job create mounted at both `/api/job/create` (spec) and `/api/get/jobs` (frontend); Applications list at both `/api/get/applications` (spec) and `/api/application/` (frontend)
 
 ---
 
@@ -210,4 +226,21 @@ VITE_API_URL=http://localhost:5000/api
 
 ---
 
-*Built by Yash · bid-ai-assignment · March 2026*
+## 🏃 Quick Start
+
+```bash
+# 1. Start PostgreSQL
+docker-compose up -d
+
+# 2. Start Backend
+cd backend && npm install && npm run dev
+
+# 3. Start Frontend
+cd frontend && npm install && npm run dev
+
+# 4. Open http://localhost:5173
+```
+
+---
+
+*Built by Yash · Bid.ai Web Developer Internship Assignment · March 2026*
