@@ -28,10 +28,16 @@ app.use(morgan('dev'))
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
 
-// All routes
+// Auth routes
 app.use('/api/auth', authRoutes)           // POST /api/auth/register, /api/auth/login, GET /api/auth/profile
-app.use('/api/get/jobs', jobRoutes)        // GET /api/get/jobs, POST /api/get/jobs, DELETE /api/get/jobs/:id
-app.use('/api/application', applicationRoutes) // POST /api/application/submit, GET /api/application/, PATCH /api/application/:id/status
+
+// Job routes — assignment spec: POST /job/create, GET /get/jobs
+app.use('/api/job', jobRoutes)             // POST /api/job/create  (createJob)
+app.use('/api/get/jobs', jobRoutes)        // GET  /api/get/jobs    (getJobs)  — kept for Careers page frontend
+
+// Application routes — assignment spec: POST /application/submit, GET /get/applications, GET /applications/:id
+app.use('/api/application', applicationRoutes)   // POST /api/application/submit, GET /api/application/:id
+app.use('/api/get/applications', applicationRoutes) // GET /api/get/applications (getApplications)
 
 app.get('/health', (req, res) => res.json({ success: true, status: 'ok', timestamp: new Date().toISOString() }))
 app.use('*', (req, res) => res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found` }))
