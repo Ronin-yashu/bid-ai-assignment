@@ -1,2 +1,138 @@
-# bid-ai-assignment
+# 🏛️ YSP — Yuva Shakti Party Platform
 
+> **Bid.ai Web Developer Internship Assignment** — Full-stack mini module built with React + Node.js + PostgreSQL
+
+[![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js)](https://nodejs.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)](https://postgresql.org)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-38bdf8?logo=tailwindcss)](https://tailwindcss.com)
+
+---
+
+## ✨ Features
+
+### Frontend
+- 🎨 **Pixel-perfect UI** matching Figma design (orange #FF6B2B brand)
+- 📱 **Fully responsive** — mobile, tablet, desktop
+- 🔐 **Auth flow** — Login + Register with JWT persistence
+- 💼 **Job Listings** — Fetched live from API, filter by department
+- 📋 **Application Form** — Submit applications with validation
+- ⚡ **Admin Dashboard** — Manage jobs & applications with status updates
+- 🚦 **Protected Routes** — Role-based access control
+
+### Backend
+- 🛡️ **RESTful API** with Express.js
+- 🗄️ **PostgreSQL** with connection pooling
+- 🔒 **JWT Authentication** + bcrypt password hashing
+- 🚦 **Rate limiting** — 100 req/15min general, 10/15min auth
+- 🔥 **Security headers** via helmet
+- 📝 **Request logging** via morgan
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js ≥ 18
+- Docker & Docker Compose
+
+### 1. Clone
+```bash
+git clone https://github.com/Ronin-yashu/bid-ai-assignment.git
+cd bid-ai-assignment
+```
+
+### 2. Start Database
+```bash
+docker compose up -d
+```
+
+### 3. Start Backend
+```bash
+cd backend
+cp .env.example .env
+npm install
+npm run dev
+# → http://localhost:5000
+```
+
+### 4. Start Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+# → http://localhost:5173
+```
+
+---
+
+## 🔌 API Endpoints
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/auth/register` | — | Register user |
+| `POST` | `/api/auth/login` | — | Login → JWT |
+| `GET` | `/api/auth/profile` | JWT | Get profile |
+| `GET` | `/api/get/jobs` | — | List all jobs |
+| `POST` | `/api/get/jobs` | JWT | Create job |
+| `DELETE` | `/api/get/jobs/:id` | JWT | Remove job |
+| `POST` | `/api/application/submit` | — | Submit application |
+| `GET` | `/api/application/` | Admin | All applications |
+| `GET` | `/api/application/:id` | Admin | Single application |
+| `PATCH` | `/api/application/:id/status` | Admin | Update status |
+| `GET` | `/api/application/stats` | Admin | Stats overview |
+
+---
+
+## 📁 Project Structure
+
+```
+bid-ai-assignment/
+├── frontend/          # React + Vite + TailwindCSS
+├── backend/           # Node.js + Express + PostgreSQL
+├── docs/
+│   ├── er_diagram.html
+│   ├── flow_diagram.html
+│   └── TECHNICAL_DOCS.md
+├── postman/
+│   └── YSP_API_Collection.postman_collection.json
+└── docker-compose.yml
+```
+
+---
+
+## 🗄️ Database Schema
+
+Three tables: **users** → **jobs** → **applications**
+
+See [`docs/er_diagram.html`](docs/er_diagram.html) for visual ER diagram.
+
+---
+
+## 📋 Postman Collection
+
+Import `postman/YSP_API_Collection.postman_collection.json` — includes:
+- All 11 endpoints with example request/response bodies
+- Auto-sets `token`, `job_id`, `application_id` via test scripts
+- Pre-configured environment variables
+
+---
+
+## 📚 Documentation
+
+- **Technical Docs:** [`docs/TECHNICAL_DOCS.md`](docs/TECHNICAL_DOCS.md)
+- **ER Diagram:** [`docs/er_diagram.html`](docs/er_diagram.html)
+- **Flow Diagram:** [`docs/flow_diagram.html`](docs/flow_diagram.html)
+- **Postman Collection:** [`postman/YSP_API_Collection.postman_collection.json`](postman/YSP_API_Collection.postman_collection.json)
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend:** React 19, Vite, TailwindCSS 4, React Router v7, TanStack Query, Zustand, Axios  
+**Backend:** Node.js, Express, PostgreSQL, JWT, bcryptjs, Helmet, CORS  
+**Dev:** Docker Compose, Nodemon, ESLint  
+
+---
+
+*Built for Bid.ai Internship Assignment · March 2026*

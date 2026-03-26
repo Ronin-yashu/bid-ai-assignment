@@ -3,7 +3,9 @@ import pool from '../db/pool.js'
 export const submitApplication = async (req, res, next) => {
   try {
     const { job_id, full_name, email, phone, city_state, education, area_of_interest, why_join } = req.body
-    if (!full_name || !email) return res.status(400).json({ success: false, message: 'Full name and email are required' })
+    if (!full_name || !email)
+      return res.status(400).json({ success: false, message: 'Full name and email are required' })
+
     const duplicate = await pool.query(
       'SELECT id FROM applications WHERE email=$1 AND (job_id=$2 OR (job_id IS NULL AND $2::uuid IS NULL))',
       [email, job_id || null]
@@ -27,15 +29,45 @@ export const getApplications = async (req, res, next) => {
     const conditions = []
     const params = []
     if (status) { params.push(status); conditions.push(`a.status=$${params.length}`) }
-    if (search) { params.push(`%${search}%`); conditions.push(`(a.full_name ILIKE $${params.length} OR a.email ILIKE $${params.length})`) }
+    if (search) {
+      params.push(`%${search}%`)
+      conditions.push(`(a.full_name ILIKE $${params.length} OR a.email ILIKE $${params.length})`)
+    }
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
     params.push(parseInt(limit), offset)
     const result = await pool.query(
-      `SELECT a.*, j.title as job_title, j.department FROM applications a LEFT JOIN jobs j ON a.job_id=j.id ${where} ORDER BY a.created_at DESC LIMIT $${params.length - 1} OFFSET $${params.length}`,
+      `SELECT a.*, j.title as job_title, j.department
+       FROM applications a
+       LEFT JOIN jobs j ON a.job_id = j.id
+       ${where}
+       ORDER BY a.created_at DESC
+       LIMIT $${params.length - 1} OFFSET $${params.length}`,
       params
     )
-    const countResult = await pool.query(`SELECT COUNT(*) FROM applications a ${where}`, params.slice(0, -2))
-    res.json({ success: true, applications: result.rows, pagination: { page: parseInt(page), limit: parseInt(limit), total: parseInt(countResult.rows[0].count) } })
+    const countResult = await pool.query(
+      `SELECT COUNT(*) FROM applications a ${where}`,
+      params.slice(0, -2)
+    )
+    res.json({
+      success: true,
+      applications: result.rows,
+      pagination: { page: parseInt(page), limit: parseInt(limit), total: parseInt(countResult.rows[0].count) }
+    })
+  } catch (err) { next(err) }
+}
+
+export const getApplicationById = async (req, res, next) => {
+  try {
+    const result = await pool.query(
+      `SELECT a.*, j.title as job_title, j.department, j.location
+       FROM applications a
+       LEFT JOIN jobs j ON a.job_id = j.id
+       WHERE a.id = $1`,
+      [req.params.id]
+    )
+    if (!result.rows[0])
+      return res.status(404).json({ success: false, message: 'Application not found' })
+    res.json({ success: true, application: result.rows[0] })
   } catch (err) { next(err) }
 }
 
@@ -64,7 +96,8 @@ export const updateApplicationStatus = async (req, res, next) => {
       'UPDATE applications SET status=$1 WHERE id=$2 RETURNING *',
       [status, req.params.id]
     )
-    if (!result.rows[0]) return res.status(404).json({ success: false, message: 'Application not found' })
+    if (!result.rows[0])
+      return res.status(404).json({ success: false, message: 'Application not found' })
     res.json({ success: true, message: 'Status updated', application: result.rows[0] })
   } catch (err) { next(err) }
 }

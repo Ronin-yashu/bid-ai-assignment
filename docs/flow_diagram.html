@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YSP — System Flow Diagram</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #e2e8f0; padding: 40px 20px; }
+  h1 { text-align: center; font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
+  .subtitle { text-align: center; color: #94a3b8; font-size: 0.85rem; margin-bottom: 50px; }
+  .flows { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+  .flow { background: #1e1e2e; border: 1px solid #2d2d4e; border-radius: 16px; padding: 24px; }
+  .flow-title { font-weight: 800; font-size: 1rem; margin-bottom: 20px; display: flex; align-items: center; gap-8px; }
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step { display: flex; align-items: flex-start; gap: 12px; position: relative; }
+  .step:not(:last-child)::after { content: ''; position: absolute; left: 15px; top: 34px; width: 2px; height: calc(100% - 10px); background: #2d2d4e; }
+  .step-num { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; flex-shrink: 0; margin-top: 2px; }
+  .step-content { padding-bottom: 20px; }
+  .step-label { font-weight: 700; font-size: 0.85rem; color: #e2e8f0; }
+  .step-sub { font-size: 0.75rem; color: #64748b; margin-top: 2px; }
+  /* Flow colors */
+  .flow-1 .step-num { background: #1e3a5f; color: #60a5fa; }
+  .flow-1 .flow-title { color: #60a5fa; }
+  .flow-2 .step-num { background: #3b1f0a; color: #fb923c; }
+  .flow-2 .flow-title { color: #fb923c; }
+  .flow-3 .step-num { background: #14532d; color: #4ade80; }
+  .flow-3 .flow-title { color: #4ade80; }
+  .flow-4 .step-num { background: #3b0764; color: #c084fc; }
+  .flow-4 .flow-title { color: #c084fc; }
+  .legend { display: flex; justify-content: center; gap: 20px; margin-top: 40px; flex-wrap: wrap; }
+  .leg { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #94a3b8; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+</style>
+</head>
+<body>
+<h1>YSP — System Flow Diagram</h1>
+<p class="subtitle">Request lifecycle & data flow · Yuva Shakti Party Platform</p>
+
+<div class="flows">
+  <!-- Flow 1 -->
+  <div class="flow flow-1">
+    <div class="flow-title">📋 Flow 1 — Submit Job Application</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-label">User visits Careers Page</div><div class="step-sub">React Frontend</div></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-label">Fills Application Form</div><div class="step-sub">react-hook-form validation</div></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-label">POST /api/application/submit</div><div class="step-sub">Axios API call</div></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-label">Express Route Handler</div><div class="step-sub">Node.js Backend</div></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-label">Check Duplicate Application</div><div class="step-sub">SELECT query on (email, job_id)</div></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-content"><div class="step-label">INSERT into applications</div><div class="step-sub">PostgreSQL</div></div></div>
+      <div class="step"><div class="step-num">7</div><div class="step-content"><div class="step-label">Success Toast shown to User</div><div class="step-sub">react-hot-toast</div></div></div>
+    </div>
+  </div>
+
+  <!-- Flow 2 -->
+  <div class="flow flow-2">
+    <div class="flow-title">💼 Flow 2 — Post & View Jobs</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-label">Authenticated User Login</div><div class="step-sub">JWT Token in Zustand</div></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-label">Fill Post Job Form</div><div class="step-sub">/post-job page</div></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-label">verifyToken Middleware</div><div class="step-sub">JWT validation</div></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-label">INSERT into jobs table</div><div class="step-sub">PostgreSQL</div></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-label">GET /api/get/jobs refresh</div><div class="step-sub">React Query cache invalidation</div></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-content"><div class="step-label">Job Visible on Careers Page</div><div class="step-sub">Live update</div></div></div>
+    </div>
+  </div>
+
+  <!-- Flow 3 -->
+  <div class="flow flow-3">
+    <div class="flow-title">🔐 Flow 3 — Authentication</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-label">Login / Register Form Submit</div><div class="step-sub">/login page</div></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-label">Lookup User in DB</div><div class="step-sub">SELECT by email</div></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-label">bcrypt.compare Password</div><div class="step-sub">bcryptjs cost factor 12</div></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-label">Generate JWT Token (7d)</div><div class="step-sub">jsonwebtoken HS256</div></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-label">Store in Zustand + localStorage</div><div class="step-sub">Persist middleware</div></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-content"><div class="step-label">Redirect to Dashboard/Home</div><div class="step-sub">react-router-dom navigate()</div></div></div>
+    </div>
+  </div>
+
+  <!-- Flow 4 -->
+  <div class="flow flow-4">
+    <div class="flow-title">🛡️ Flow 4 — Admin Manage Applications</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-label">Admin Authenticated</div><div class="step-sub">role = 'admin'</div></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-label">Admin Dashboard</div><div class="step-sub">/admin page</div></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-label">requireAdmin Middleware</div><div class="step-sub">Role check on every request</div></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-label">Fetch All Applications</div><div class="step-sub">LEFT JOIN jobs query</div></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-label">Update Status Dropdown</div><div class="step-sub">PATCH /application/:id/status</div></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-content"><div class="step-label">UPDATE applications SET status</div><div class="step-sub">PostgreSQL</div></div></div>
+      <div class="step"><div class="step-num">7</div><div class="step-content"><div class="step-label">Invalidate Cache & Re-fetch</div><div class="step-sub">React Query queryClient.invalidateQueries()</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="leg"><div class="leg-dot" style="background:#60a5fa"></div>Frontend (React)</div>
+  <div class="leg"><div class="leg-dot" style="background:#fb923c"></div>Backend (Node.js/Express)</div>
+  <div class="leg"><div class="leg-dot" style="background:#4ade80"></div>Database (PostgreSQL)</div>
+  <div class="leg"><div class="leg-dot" style="background:#c084fc"></div>Auth (JWT/bcrypt)</div>
+</div>
+
+<p style="text-align:center;color:#334155;font-size:0.75rem;margin-top:40px">YSP Platform — bid-ai-assignment · March 2026</p>
+</body>
+</html>
