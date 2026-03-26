@@ -1,0 +1,167 @@
+{
+  "info": {
+    "name": "YSP - Yuva Shakti Party API",
+    "description": "Complete API collection for YSP platform - Jobs & Applications management",
+    "_postman_id": "ysp-api-v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000/api", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "admin_token", "value": "", "type": "string" },
+    { "key": "job_id", "value": "", "type": "string" },
+    { "key": "application_id", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) {", "  const res = pm.response.json();", "  pm.collectionVariables.set('token', res.token);", "  pm.test('User registered successfully', () => pm.expect(res.success).to.be.true);", "}" ] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/auth/register",
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Yash Sharma\",\n  \"email\": \"yash@example.com\",\n  \"password\": \"password123\"\n}" }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 200) {", "  const res = pm.response.json();", "  pm.collectionVariables.set('token', res.token);", "  if (res.user.role === 'admin') pm.collectionVariables.set('admin_token', res.token);", "  pm.test('Login successful', () => pm.expect(res.success).to.be.true);", "}" ] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/auth/login",
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"yash@example.com\",\n  \"password\": \"password123\"\n}" }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/auth/profile"
+          }
+        }
+      ]
+    },
+    {
+      "name": "💼 Jobs",
+      "item": [
+        {
+          "name": "GET /get/jobs — Fetch All Jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/get/jobs?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["get", "jobs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "department", "value": "Research", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /get/jobs — Create Job",
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) {", "  const res = pm.response.json();", "  pm.collectionVariables.set('job_id', res.job.id);", "  pm.test('Job created', () => pm.expect(res.success).to.be.true);", "}" ] } }],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/get/jobs",
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Policy Research Associate\",\n  \"department\": \"Research\",\n  \"location\": \"Delhi / Remote\",\n  \"type\": \"Full-time\",\n  \"description\": \"Conduct policy research and contribute to YSP publications.\",\n  \"requirements\": \"Graduate in Political Science or related field.\"\n}" }
+          }
+        },
+        {
+          "name": "DELETE /get/jobs/:id — Remove Job",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/get/jobs/{{job_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Applications",
+      "item": [
+        {
+          "name": "POST /application/submit — Submit Application",
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) {", "  const res = pm.response.json();", "  pm.collectionVariables.set('application_id', res.application.id);", "  pm.test('Application submitted', () => pm.expect(res.success).to.be.true);", "}" ] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/application/submit",
+            "body": { "mode": "raw", "raw": "{\n  \"job_id\": \"{{job_id}}\",\n  \"full_name\": \"Priya Mehta\",\n  \"email\": \"priya.mehta@example.com\",\n  \"phone\": \"9876543210\",\n  \"city_state\": \"Mumbai, Maharashtra\",\n  \"education\": \"B.A. Political Science, Delhi University\",\n  \"area_of_interest\": \"Policy Research\",\n  \"why_join\": \"I want to contribute to evidence-based governance and youth leadership in India.\"\n}" }
+          }
+        },
+        {
+          "name": "GET /application/ — All Applications (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/application/?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["application", ""],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "status", "value": "pending", "disabled": true },
+                { "key": "search", "value": "Priya", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /application/:id — Single Application (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": "{{base_url}}/application/{{application_id}}"
+          }
+        },
+        {
+          "name": "PATCH /application/:id/status — Update Status (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": "{{base_url}}/application/{{application_id}}/status",
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"shortlisted\"\n}" }
+          }
+        },
+        {
+          "name": "GET /application/stats — Stats (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": "{{base_url}}/application/stats"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏥 Health",
+      "item": [
+        {
+          "name": "GET /health — Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:5000/health"
+          }
+        }
+      ]
+    }
+  ]
+}
