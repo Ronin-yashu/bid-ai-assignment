@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, Navigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import api from '../lib/api'
 import { useAuthStore } from '../store/authStore'
@@ -13,8 +13,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [showPass, setShowPass] = useState(false)
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
-  const { setAuth } = useAuthStore()
+  const { setAuth, isAuthenticated, user } = useAuthStore()
   const navigate = useNavigate()
+
+  // Already logged in — redirect away immediately
+  if (isAuthenticated) {
+    return <Navigate to={user?.role === 'admin' ? '/admin' : '/'} replace />
+  }
 
   const onSubmit = async (data) => {
     setLoading(true)
