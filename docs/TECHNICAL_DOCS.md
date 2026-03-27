@@ -7,6 +7,17 @@
 
 ---
 
+## 🔗 Live URLs
+
+| | URL |
+|---|---|
+| 🌐 **Frontend** | [https://bid-ai-assignment.vercel.app](https://bid-ai-assignment.vercel.app) |
+| 🚀 **Backend API** | [https://bid-ai-assignment.onrender.com](https://bid-ai-assignment.onrender.com) |
+| 💯 **Health Check** | [https://bid-ai-assignment.onrender.com/health](https://bid-ai-assignment.onrender.com/health) |
+| 💻 **GitHub Repo** | [https://github.com/Ronin-yashu/bid-ai-assignment](https://github.com/Ronin-yashu/bid-ai-assignment) |
+
+---
+
 ## 📦 Tech Stack
 
 | Layer | Technology | Version | Purpose |
@@ -32,6 +43,8 @@
 | **Backend** | compression | 1.x | Response compression |
 | **Backend** | morgan | 1.x | HTTP request logging |
 | **DevOps** | Docker Compose | latest | PostgreSQL local dev |
+| **Hosting** | Vercel | — | Frontend deployment |
+| **Hosting** | Render | — | Backend + PostgreSQL |
 
 ---
 
@@ -43,53 +56,50 @@ bid-ai-assignment/
 │   └── src/
 │       ├── components/        # Navbar, Footer, ProtectedRoute, NotificationToast
 │       ├── pages/             # HomePage, CareersPage, AdminPage, LoginPage, ProfilePage...
-│       ├── store/authStore.js # Zustand auth store (persisted)
-│       ├── lib/api.js         # Axios instance with interceptors
-│       └── App.jsx            # Route definitions
+│       ├── store/authStore.js # Zustand auth store (persisted to localStorage)
+│       ├── lib/api.js         # Axios instance with JWT interceptor + auto-logout on 401
+│       └── App.jsx            # Route definitions + protected/admin guards
 ├── backend/
 │   └── src/
 │       ├── controllers/       # authController, jobsController, applicationsController
 │       ├── routes/            # auth.js, jobs.js, applications.js
 │       ├── middleware/        # auth.js (verifyToken, requireAdmin), errorHandler.js, validate.js
-│       ├── db/                # pool.js, schema.sql, init.js
-│       └── index.js           # Express entry point
+│       ├── db/                # pool.js (SSL-aware), schema.sql, init.js (auto table creation)
+│       └── index.js           # Express entry — CORS whitelist, rate limiting, route mounting
 ├── docs/
 │   ├── er_diagram.html
 │   ├── flow_diagram.html
 │   └── TECHNICAL_DOCS.md
 ├── postman/
 │   └── YSP_API_Collection.postman_collection.json
-└── docker-compose.yml
+├── docker-compose.yml
+└── backend/render.yaml
 ```
 
 ---
 
 ## 🔌 API Endpoints
 
-### Authentication
+### ✅ Assignment Required Endpoints
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/job/create` | Bearer JWT | Create new job listing |
+| `GET` | `/api/get/jobs` | None | Fetch all active jobs |
+| `POST` | `/api/application/submit` | None | Submit a job application |
+| `GET` | `/api/get/applications` | None | Fetch all applications |
+| `GET` | `/api/application/:id` | None | Fetch specific application by ID |
+
+### Additional Endpoints
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | `POST` | `/api/auth/register` | None | Register new user |
 | `POST` | `/api/auth/login` | None | Login, returns JWT |
 | `GET` | `/api/auth/profile` | Bearer JWT | Get current user profile |
-
-### Jobs
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| `POST` | `/api/job/create` | Bearer JWT | **Create new job listing** (assignment spec) |
-| `GET` | `/api/get/jobs` | None | **Fetch all active jobs** for Careers page |
+| `POST` | `/api/auth/register-admin` | admin_secret | Create admin account |
 | `DELETE` | `/api/get/jobs/:id` | Bearer JWT | Soft-delete a job |
-
-### Applications
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| `POST` | `/api/application/submit` | None | **Submit a job application** |
-| `GET` | `/api/get/applications` | None | **Fetch all applications** (assignment spec) |
-| `GET` | `/api/application/:id` | None | **Fetch specific application by ID** |
 | `PATCH` | `/api/application/:id/status` | Admin JWT | Update application status |
 | `GET` | `/api/application/stats` | Admin JWT | Get counts by status |
-
-> **Note:** All 5 assignment-required endpoints are implemented and publicly accessible for Postman testing.
+| `GET` | `/health` | None | Health check |
 
 ---
 
@@ -154,8 +164,9 @@ CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
 4. On success, JWT signed with `JWT_SECRET` (expires 7 days)
 5. Frontend stores JWT + user in Zustand (persisted via localStorage)
 6. Every protected request sends `Authorization: Bearer <token>`
-7. `verifyToken` middleware decodes + validates JWT
+7. `verifyToken` middleware decodes + validates JWT on each request
 8. `requireAdmin` middleware checks `user.role === 'admin'`
+9. On 401 response, Axios interceptor auto-logouts + redirects to `/login`
 
 ---
 
@@ -179,18 +190,20 @@ CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
 | JWT tokens | 7-day expiry, HS256 |
 | Rate limiting | 100 req/15min general, 10/15min auth |
 | Security headers | helmet.js |
-| CORS | Restricted to frontend URL |
+| CORS | Whitelisted to Vercel URL + localhost only |
 | SQL injection prevention | Parameterized queries (pg) |
 | Response compression | compression middleware |
+| SSL DB connection | Enabled in production (Render) |
 
 ---
 
 ## 🌐 Frontend Architecture
 
-- **Server State:** TanStack React Query (caching, background refetch)
-- **Client State:** Zustand with persist middleware (auth token + user)
+- **Server State:** TanStack React Query (caching, background refetch, stale-while-revalidate)
+- **Client State:** Zustand with persist middleware (auth token + user saved in localStorage)
 - **API Integration:** Axios instance — request interceptor attaches JWT, response interceptor auto-logout on 401
-- **Routing:** Public / Protected (JWT) / Admin (role=admin) routes
+- **Routing:** Public / Protected (JWT required) / Admin (role=admin required)
+- **Auth Guard:** Already-logged-in users visiting `/login` are redirected to `/` or `/admin`
 - **Pages:** HomePage, CareersPage, PostJobPage, AdminPage, LoginPage, ProfilePage, AboutPage, MembershipPage, YspTvPage, MediaPage, TransparencyPage
 
 ---
@@ -201,9 +214,10 @@ CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
 2. **Duplicate Guard** — `(email, job_id)` check prevents double submissions
 3. **General Applications** — `job_id` nullable, applicants can apply without a specific role
 4. **UUID PKs** — `gen_random_uuid()` on all tables (non-enumerable, secure)
-5. **Connection Pooling** — `pg.Pool` with max 20 connections
-6. **React Query Caching** — 5-min stale time, minimizes redundant API calls
-7. **Dual Route Mounting** — Job create mounted at both `/api/job/create` (spec) and `/api/get/jobs` (frontend); Applications list at both `/api/get/applications` (spec) and `/api/application/` (frontend)
+5. **Connection Pooling** — `pg.Pool` with max 20 connections, SSL in production
+6. **React Query Caching** — 5-min stale time, minimises redundant API calls
+7. **Dual Route Mounting** — Job create at `/api/job/create` (spec) + `/api/get/jobs` (GET, frontend); Applications list at `/api/get/applications` (spec) + `/api/application/` (frontend)
+8. **Auto DB Init** — `initDB()` runs `CREATE TABLE IF NOT EXISTS` on every server start, safe for Render cold starts
 
 ---
 
@@ -211,12 +225,13 @@ CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
 
 ### Backend (.env)
 ```env
-DATABASE_URL=postgresql://admin:admin123@localhost:5432/bidai
-JWT_SECRET=your_super_secret_key_here
+DATABASE_URL=postgresql://user:password@localhost:5432/ysp_db
+JWT_SECRET=your_super_secret_key_here_min_32_chars
 JWT_EXPIRES_IN=7d
 PORT=5000
 FRONTEND_URL=http://localhost:5173
 NODE_ENV=development
+ADMIN_SECRET=your_admin_secret_here
 ```
 
 ### Frontend (.env)
@@ -224,21 +239,41 @@ NODE_ENV=development
 VITE_API_URL=http://localhost:5000/api
 ```
 
+### Production (Render + Vercel)
+```env
+# Render
+DATABASE_URL=<internal render postgres url>
+JWT_SECRET=<random 32+ char string>
+FRONTEND_URL=https://bid-ai-assignment.vercel.app
+NODE_ENV=production
+ADMIN_SECRET=<your secret>
+
+# Vercel
+VITE_API_URL=https://bid-ai-assignment.onrender.com/api
+```
+
 ---
 
-## 🏃 Quick Start
+## 🏃 Quick Start (Local)
 
 ```bash
-# 1. Start PostgreSQL
+# 1. Clone
+git clone https://github.com/Ronin-yashu/bid-ai-assignment.git
+cd bid-ai-assignment
+
+# 2. Start PostgreSQL
 docker-compose up -d
 
-# 2. Start Backend
-cd backend && npm install && npm run dev
+# 3. Start Backend
+cd backend
+cp .env.example .env   # fill in values
+npm install
+npm run dev            # http://localhost:5000
 
-# 3. Start Frontend
-cd frontend && npm install && npm run dev
-
-# 4. Open http://localhost:5173
+# 4. Start Frontend
+cd ../frontend
+npm install
+npm run dev            # http://localhost:5173
 ```
 
 ---
