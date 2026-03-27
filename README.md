@@ -7,6 +7,14 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)](https://postgresql.org)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-38bdf8?logo=tailwindcss)](https://tailwindcss.com)
 
+## 🔗 Live Demo
+
+| | URL |
+|---|---|
+| 🌐 **Frontend** | [https://bid-ai-assignment.vercel.app](https://bid-ai-assignment.vercel.app) |
+| 🚀 **Backend API** | [https://bid-ai-assignment.onrender.com](https://bid-ai-assignment.onrender.com) |
+| 💯 **Health Check** | [https://bid-ai-assignment.onrender.com/health](https://bid-ai-assignment.onrender.com/health) |
+
 ---
 
 ## ✨ Features
@@ -26,7 +34,7 @@
 - 🔒 **JWT Authentication** + bcrypt password hashing
 - 🚦 **Rate limiting** — 100 req/15min general, 10/15min auth
 - 🔥 **Security headers** via helmet
-- 📝 **Request logging** via morgan
+- 🌍 **CORS** whitelisted to Vercel production + localhost
 
 ---
 
@@ -50,7 +58,7 @@ docker compose up -d
 ### 3. Start Backend
 ```bash
 cd backend
-cp .env.example .env
+cp .env.example .env   # fill in your values
 npm install
 npm run dev
 # → http://localhost:5000
@@ -68,14 +76,14 @@ npm run dev
 
 ## 🔌 API Endpoints
 
-### Assignment Required Endpoints
+### ✅ Assignment Required Endpoints
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `POST` | `/api/job/create` | JWT | ✅ Create job listing |
-| `GET` | `/api/get/jobs` | — | ✅ Fetch all jobs |
-| `POST` | `/api/application/submit` | — | ✅ Submit application |
-| `GET` | `/api/get/applications` | — | ✅ Fetch all applications |
-| `GET` | `/api/application/:id` | — | ✅ Get application by ID |
+| `POST` | `/api/job/create` | JWT | Create job listing |
+| `GET` | `/api/get/jobs` | — | Fetch all active jobs |
+| `POST` | `/api/application/submit` | — | Submit application |
+| `GET` | `/api/get/applications` | — | Fetch all applications |
+| `GET` | `/api/application/:id` | — | Get application by ID |
 
 ### Additional Endpoints
 | Method | Endpoint | Auth | Description |
@@ -116,10 +124,10 @@ See [`docs/er_diagram.html`](docs/er_diagram.html) for visual ER diagram.
 
 ## 📋 Postman Collection
 
-Import `postman/YSP_API_Collection.postman_collection.json` — includes:
-- All 5 assignment-required endpoints clearly marked
+Import `postman/YSP_API_Collection.postman_collection.json`:
+- All 5 assignment-required endpoints clearly marked with ✅
 - Auto-sets `token`, `job_id`, `application_id` via test scripts
-- Pre-configured collection variables
+- Change `base_url` variable to `https://bid-ai-assignment.onrender.com/api` for production testing
 
 ---
 
@@ -136,7 +144,7 @@ Import `postman/YSP_API_Collection.postman_collection.json` — includes:
 
 **Frontend:** React 19, Vite, TailwindCSS 4, React Router v7, TanStack Query, Zustand, Axios  
 **Backend:** Node.js, Express, PostgreSQL, JWT, bcryptjs, Helmet, CORS  
-**Dev:** Docker Compose, Nodemon, ESLint  
+**Hosting:** Vercel (frontend) + Render (backend + PostgreSQL)  
 
 ---
 
