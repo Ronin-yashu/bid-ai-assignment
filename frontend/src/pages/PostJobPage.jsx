@@ -18,7 +18,7 @@ export default function PostJobPage() {
     if (!isAuthenticated) { toast.error('Please login first'); navigate('/login'); return }
     setLoading(true)
     try {
-      await api.post('/get/jobs', data)
+      await api.post('/job/create', data)
       toast.success('Job posted successfully!')
       reset()
       setTimeout(() => navigate('/careers'), 1000)

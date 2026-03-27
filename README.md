@@ -1,4 +1,4 @@
-# 🏛️ YSP — Yuva Shakti Party Platform
+# 🏗️ YSP — Yuva Shakti Party Platform
 
 > **Bid.ai Web Developer Internship Assignment** — Full-stack mini module built with React + Node.js + PostgreSQL
 
@@ -22,7 +22,7 @@
 
 ### Backend
 - 🛡️ **RESTful API** with Express.js
-- 🗄️ **PostgreSQL** with connection pooling
+- 🖼️ **PostgreSQL** with connection pooling
 - 🔒 **JWT Authentication** + bcrypt password hashing
 - 🚦 **Rate limiting** — 100 req/15min general, 10/15min auth
 - 🔥 **Security headers** via helmet
@@ -68,17 +68,22 @@ npm run dev
 
 ## 🔌 API Endpoints
 
+### Assignment Required Endpoints
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/job/create` | JWT | ✅ Create job listing |
+| `GET` | `/api/get/jobs` | — | ✅ Fetch all jobs |
+| `POST` | `/api/application/submit` | — | ✅ Submit application |
+| `GET` | `/api/get/applications` | — | ✅ Fetch all applications |
+| `GET` | `/api/application/:id` | — | ✅ Get application by ID |
+
+### Additional Endpoints
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | `POST` | `/api/auth/register` | — | Register user |
 | `POST` | `/api/auth/login` | — | Login → JWT |
 | `GET` | `/api/auth/profile` | JWT | Get profile |
-| `GET` | `/api/get/jobs` | — | List all jobs |
-| `POST` | `/api/get/jobs` | JWT | Create job |
 | `DELETE` | `/api/get/jobs/:id` | JWT | Remove job |
-| `POST` | `/api/application/submit` | — | Submit application |
-| `GET` | `/api/application/` | Admin | All applications |
-| `GET` | `/api/application/:id` | Admin | Single application |
 | `PATCH` | `/api/application/:id/status` | Admin | Update status |
 | `GET` | `/api/application/stats` | Admin | Stats overview |
 
@@ -112,9 +117,9 @@ See [`docs/er_diagram.html`](docs/er_diagram.html) for visual ER diagram.
 ## 📋 Postman Collection
 
 Import `postman/YSP_API_Collection.postman_collection.json` — includes:
-- All 11 endpoints with example request/response bodies
+- All 5 assignment-required endpoints clearly marked
 - Auto-sets `token`, `job_id`, `application_id` via test scripts
-- Pre-configured environment variables
+- Pre-configured collection variables
 
 ---
 
