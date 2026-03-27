@@ -25,6 +25,31 @@ export const register = async (req, res, next) => {
   } catch (err) { next(err) }
 }
 
+export const registerAdmin = async (req, res, next) => {
+  try {
+    const { name, email, password, admin_secret } = req.body
+
+    // Guard: must match ADMIN_SECRET env var
+    const expectedSecret = process.env.ADMIN_SECRET || 'bidai_admin_2026'
+    if (admin_secret !== expectedSecret)
+      return res.status(403).json({ success: false, message: 'Invalid admin secret' })
+
+    const exists = await pool.query('SELECT id FROM users WHERE email=$1', [email])
+    if (exists.rows.length > 0)
+      return res.status(409).json({ success: false, message: 'Email already registered' })
+
+    const hashedPassword = await bcrypt.hash(password, 12)
+    const result = await pool.query(
+      `INSERT INTO users (name, email, password, role)
+       VALUES ($1, $2, $3, 'admin') RETURNING id, name, email, role, created_at`,
+      [name, email, hashedPassword]
+    )
+    const user = result.rows[0]
+    const token = signToken(user.id)
+    res.status(201).json({ success: true, message: 'Admin account created', user, token })
+  } catch (err) { next(err) }
+}
+
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body
